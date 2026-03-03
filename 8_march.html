@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C 8 Марта Сашуль ❤️</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-1: #fff8f9;
+      --bg-2: #fff5f7;
+      --bg-3: #fffdf6;
+      --text: #2d2230;
+      --muted: #6f5f72;
+      --gold: #d7b77f;
+      --gold-soft: rgba(215, 183, 127, 0.2);
+      --glass: rgba(255, 255, 255, 0.38);
+      --glass-border: rgba(255, 255, 255, 0.62);
+      --easing: 0.3s ease;
+      --radius-xl: 30px;
+      --radius-md: 18px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: "Montserrat", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(80% 60% at 10% 0%, #ffe6ef 0%, rgba(255, 230, 239, 0) 70%),
+        radial-gradient(80% 60% at 90% 10%, #fff0dd 0%, rgba(255, 240, 221, 0) 68%),
+        linear-gradient(145deg, var(--bg-1), var(--bg-2) 58%, var(--bg-3));
+      overflow-x: hidden;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.35;
+    }
+
+    body::before {
+      inset: 0 auto 0 0;
+      width: 18vw;
+      background:
+        radial-gradient(100% 30% at 0% 20%, rgba(216, 179, 110, 0.45), transparent 72%),
+        radial-gradient(120% 30% at 20% 62%, rgba(199, 151, 73, 0.3), transparent 75%);
+      filter: blur(12px);
+    }
+
+    body::after {
+      inset: 0 0 0 auto;
+      width: 18vw;
+      background:
+        radial-gradient(100% 28% at 100% 28%, rgba(216, 179, 110, 0.44), transparent 72%),
+        radial-gradient(120% 28% at 80% 72%, rgba(199, 151, 73, 0.32), transparent 74%);
+      filter: blur(12px);
+    }
+
+    .site {
+      position: relative;
+      z-index: 2;
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 1s ease, transform 1s ease;
+    }
+
+    .site.is-ready {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .scroll-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      z-index: 30;
+      background: rgba(255, 255, 255, 0.26);
+      backdrop-filter: blur(4px);
+      pointer-events: none;
+    }
+
+    .scroll-progress__bar {
+      display: block;
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #ff88b6, #f3bf67, #e69ee9);
+      transition: width 0.2s ease;
+    }
+
+    .quick-nav {
+      position: fixed;
+      right: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 24;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .quick-nav__dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 999px;
+      border: 1px solid rgba(107, 79, 93, 0.55);
+      background: rgba(255, 255, 255, 0.65);
+      cursor: pointer;
+      transition: transform var(--easing), background var(--easing), box-shadow var(--easing);
+      padding: 0;
+    }
+
+    .quick-nav__dot.is-active {
+      transform: scale(1.22);
+      background: #fbb0ce;
+      box-shadow: 0 0 0 5px rgba(251, 176, 206, 0.22);
+    }
+
+    .secret-banner {
+      position: fixed;
+      left: 50%;
+      bottom: 26px;
+      transform: translateX(-50%) translateY(20px);
+      z-index: 24;
+      background: rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(8px);
+      border-radius: 999px;
+      padding: 10px 18px;
+      color: #5b3f4b;
+      font-size: 0.88rem;
+      letter-spacing: 0.02em;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s ease, transform 0.35s ease;
+    }
+
+    .secret-banner.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .veil {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 24px;
+      background:
+        radial-gradient(100% 100% at 30% 20%, #fff, #ffeef4 72%),
+        linear-gradient(180deg, #fff7fa, #fee9f2);
+      transition: transform 1.1s cubic-bezier(0.28, 0.76, 0.22, 1), opacity 0.9s ease;
+      cursor: pointer;
+    }
+
+    .veil.is-open {
+      transform: translateY(-102%);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .veil__title {
+      font-family: "Cormorant Garamond", serif;
+      font-size: clamp(2.4rem, 5vw, 5rem);
+      letter-spacing: 0.06em;
+      filter: blur(14px);
+      opacity: 0;
+      animation: titleFocus 2.7s forwards;
+      color: #3e2a39;
+    }
+
+    .veil__hint {
+      margin-top: 16px;
+      font-size: clamp(0.82rem, 1.6vw, 1rem);
+      color: #8a7081;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      opacity: 0.88;
+    }
+
+    @keyframes titleFocus {
+      0% {
+        filter: blur(14px);
+        opacity: 0;
+      }
+      100% {
+        filter: blur(0);
+        opacity: 1;
+      }
+    }
+
+    section {
+      min-height: 100vh;
+      padding: 0 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .hero {
+      gap: clamp(24px, 5vw, 84px);
+      flex-wrap: wrap;
+    }
+
+    .photo-wrap {
+      position: relative;
+      width: min(46vw, 500px);
+      min-width: 290px;
+      aspect-ratio: 1 / 1;
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      isolation: isolate;
+      background: linear-gradient(160deg, rgba(255, 247, 251, 0.95), rgba(248, 236, 244, 0.9));
+      box-shadow:
+        0 24px 55px rgba(45, 34, 48, 0.2),
+        0 6px 16px rgba(45, 34, 48, 0.12);
+      transition: transform var(--easing), box-shadow var(--easing);
+    }
+
+    .photo-wrap:hover {
+      transform: translateY(-4px);
+      box-shadow:
+        0 30px 62px rgba(45, 34, 48, 0.22),
+        0 8px 20px rgba(45, 34, 48, 0.14);
+    }
+
+    .photo-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center;
+      filter: contrast(1.04) saturate(1.08) sepia(0.12) brightness(1.03);
+      transform: scale(1.01);
+      transition: transform 0.45s ease, filter 0.45s ease;
+    }
+
+    .photo-wrap::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(100% 90% at 50% 50%, transparent 46%, rgba(19, 8, 17, 0.38) 100%),
+        linear-gradient(130deg, rgba(255, 241, 225, 0.24), transparent 44%);
+      mix-blend-mode: multiply;
+      opacity: 0.55;
+      transition: opacity var(--easing);
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .photo-wrap::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(rgba(255, 255, 255, 0.18) 0.6px, transparent 0.6px);
+      background-size: 3px 3px;
+      opacity: 0.22;
+      pointer-events: none;
+      z-index: 3;
+      mix-blend-mode: soft-light;
+    }
+
+    .photo-wrap:hover img {
+      transform: scale(1.03);
+      filter: contrast(1.06) saturate(1.12) sepia(0.12) brightness(1.02);
+    }
+
+    .photo-wrap:hover::before {
+      opacity: 0.82;
+    }
+
+    .photo-wrap.is-tilting {
+      transition: transform 0.12s ease, box-shadow var(--easing);
+    }
+
+    .hero-copy {
+      max-width: 520px;
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.9s ease 0.25s, transform 0.9s ease 0.25s;
+    }
+
+    .site.is-ready .hero-copy {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .hero-name {
+      font-family: "Cormorant Garamond", serif;
+      font-size: clamp(2.6rem, 6.5vw, 5.4rem);
+      letter-spacing: 0.08em;
+      line-height: 0.95;
+      margin-bottom: 14px;
+    }
+
+    .hero-sub {
+      font-size: clamp(1rem, 2.4vw, 1.36rem);
+      font-weight: 400;
+      color: var(--muted);
+      line-height: 1.56;
+      max-width: 44ch;
+    }
+
+    .typewriter-section {
+      flex-direction: column;
+      gap: 20px;
+      text-align: center;
+    }
+
+    #wordsSection,
+    #facetsSection {
+      margin-top: 100px;
+    }
+
+    #hero,
+    #wordsSection,
+    #facetsSection {
+      min-height: auto;
+    }
+
+    #hero {
+      padding-top: 50px;
+      margin-top: 0;
+    }
+
+    #finalSection {
+      min-height: auto;
+      padding-bottom: 50px;
+      margin-top: 100px;
+      margin-bottom: 0;
+    }
+
+    .section-title {
+      font-family: "Cormorant Garamond", serif;
+      font-size: clamp(2rem, 4.6vw, 3.2rem);
+      letter-spacing: 0.04em;
+    }
+
+    .typewriter-box {
+      width: min(850px, 92vw);
+      min-height: 170px;
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.66);
+      border: 1px solid rgba(95, 70, 78, 0.1);
+      box-shadow: 0 16px 30px rgba(57, 42, 49, 0.09);
+      padding: clamp(20px, 3.4vw, 34px);
+      text-align: left;
+      backdrop-filter: blur(8px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .typewriter-line {
+      font-size: clamp(1rem, 2.2vw, 1.36rem);
+      line-height: 1.58;
+      color: #4d3a48;
+      min-height: 1.6em;
+      word-break: break-word;
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 0.6ch;
+      margin-left: 1px;
+      animation: blink 0.9s steps(1) infinite;
+      color: #9f6f85;
+      font-weight: 500;
+    }
+
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      50.01%, 100% { opacity: 0; }
+    }
+
+    .typing-history {
+      margin-top: 12px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .typing-history p {
+      color: #7c6577;
+      font-size: 0.94rem;
+      opacity: 0;
+      transform: translateY(6px);
+      animation: fadeUp 0.5s ease forwards;
+    }
+
+    @keyframes fadeUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .facets {
+      flex-direction: column;
+      gap: 20px;
+      text-align: center;
+    }
+
+    .facets-title {
+      font-family: "Cormorant Garamond", serif;
+      font-size: clamp(1.55rem, 3.8vw, 2.4rem);
+      font-weight: 600;
+      line-height: 1.2;
+      letter-spacing: 0.01em;
+      color: #584151;
+    }
+
+    .facets-orb {
+      position: relative;
+      width: min(850px, 92vw);
+      min-height: 152px;
+      height: auto;
+      margin-top: 10px;
+      border-radius: 22px;
+      border: 1px solid rgba(255, 255, 255, 0.78);
+      background:
+        linear-gradient(155deg, rgba(255, 255, 255, 0.84), rgba(255, 243, 250, 0.42));
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      box-shadow:
+        inset 0 0 26px rgba(255, 255, 255, 0.45),
+        0 0 0 1px rgba(255, 255, 255, 0.35),
+        0 14px 28px rgba(40, 23, 32, 0.2);
+      z-index: 4;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 24px 24px 22px;
+      color: #5d3f4e;
+      font-family: "Cormorant Garamond", serif;
+      transition: transform var(--easing), box-shadow var(--easing);
+      cursor: pointer;
+      user-select: none;
+      text-align: center;
+    }
+
+    .facets-orb:hover {
+      transform: scale(1.04);
+      box-shadow:
+        inset 0 0 28px rgba(255, 255, 255, 0.8),
+        0 0 0 1px rgba(255, 255, 255, 0.45),
+        0 20px 34px rgba(40, 23, 32, 0.24);
+    }
+
+    .facets-main {
+      font-size: clamp(1.45rem, 4.2vw, 2.2rem);
+      letter-spacing: 0.02em;
+      color: #4e3443;
+      line-height: 1.05;
+    }
+
+    .facets-sub {
+      font-family: "Montserrat", sans-serif;
+      font-size: clamp(0.92rem, 2vw, 1rem);
+      line-height: 1.5;
+      color: #6d5565;
+      max-width: 42ch;
+      font-weight: 400;
+    }
+
+    .pulse-soft {
+      animation: pulseSoft 2.4s ease-in-out infinite alternate;
+    }
+
+    @keyframes pulseSoft {
+      0% {
+        filter: brightness(1);
+      }
+      100% {
+        filter: brightness(1.06);
+      }
+    }
+
+    .final {
+      flex-direction: column;
+      text-align: center;
+      gap: 20px;
+    }
+
+    .final-title {
+      font-family: "Cormorant Garamond", serif;
+      font-size: clamp(2.2rem, 5vw, 4rem);
+      letter-spacing: 0.04em;
+    }
+
+    .final-sub {
+      color: #765d6b;
+      font-size: clamp(0.96rem, 2.2vw, 1.12rem);
+      max-width: 48ch;
+      line-height: 1.6;
+    }
+
+    .hug-btn {
+      border: 1px solid rgba(76, 56, 66, 0.18);
+      background: linear-gradient(140deg, #fff, #ffeef6);
+      color: #4c3843;
+      font-size: 1rem;
+      padding: 14px 28px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: transform var(--easing), box-shadow var(--easing), background var(--easing);
+      box-shadow: 0 10px 22px rgba(80, 55, 65, 0.1);
+    }
+
+    .hug-btn:hover {
+      transform: translateY(-2px) scale(1.015);
+      box-shadow: 0 16px 30px rgba(80, 55, 65, 0.16);
+      background: linear-gradient(140deg, #fff, #ffe4f1);
+    }
+
+    .heart {
+      position: fixed;
+      top: -24px;
+      z-index: 40;
+      pointer-events: none;
+      will-change: transform, opacity;
+      animation: heartFall linear forwards;
+      filter: drop-shadow(0 6px 10px rgba(168, 41, 89, 0.2));
+    }
+
+    .click-heart {
+      position: fixed;
+      z-index: 45;
+      pointer-events: none;
+      animation: popHeart 1s ease forwards;
+      font-size: 18px;
+    }
+
+    @keyframes popHeart {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.5);
+      }
+      20% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.15);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -120px) scale(0.8);
+      }
+    }
+
+    .sparkle {
+      position: fixed;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.95), rgba(255, 215, 239, 0.2));
+      z-index: 35;
+      pointer-events: none;
+      animation: sparkleLife 0.85s ease forwards;
+    }
+
+    @keyframes sparkleLife {
+      to {
+        opacity: 0;
+        transform: translateY(-14px) scale(0.2);
+      }
+    }
+
+    body.party-mode {
+      animation: glowShift 2.6s ease-in-out infinite alternate;
+    }
+
+    @keyframes glowShift {
+      0% {
+        filter: saturate(1) hue-rotate(0deg);
+      }
+      100% {
+        filter: saturate(1.08) hue-rotate(-10deg);
+      }
+    }
+
+    @keyframes heartFall {
+      to {
+        transform: translate3d(var(--drift, 0), 108vh, 0) rotate(360deg);
+        opacity: 0.15;
+      }
+    }
+
+    .petals {
+      position: fixed;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .petal {
+      position: absolute;
+      top: -8%;
+      width: 14px;
+      height: 20px;
+      border-radius: 80% 60% 80% 60%;
+      background: linear-gradient(130deg, rgba(255, 210, 228, 0.95), rgba(255, 157, 192, 0.55));
+      box-shadow: 0 0 12px rgba(255, 215, 232, 0.7);
+      opacity: 0.66;
+      animation: petalFall linear infinite, petalShimmer 2.6s ease-in-out infinite;
+    }
+
+    .petal::after {
+      content: "";
+      position: absolute;
+      inset: 2px 1px auto auto;
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.66);
+      filter: blur(1px);
+      opacity: 0.8;
+    }
+
+    @keyframes petalFall {
+      to {
+        transform: translate3d(var(--fall-x, 0), 115vh, 0) rotate(430deg);
+      }
+    }
+
+    @keyframes petalShimmer {
+      0%, 100% {
+        filter: hue-rotate(0deg) brightness(1);
+      }
+      50% {
+        filter: hue-rotate(15deg) brightness(1.18);
+      }
+    }
+
+    .is-mobile .petal {
+      opacity: 0.5;
+      box-shadow: 0 0 8px rgba(255, 215, 232, 0.54);
+    }
+
+    @media (max-width: 980px) {
+      .hero {
+        align-content: center;
+      }
+
+      .photo-wrap {
+        width: min(84vw, 440px);
+      }
+
+      .hero-copy {
+        text-align: center;
+      }
+
+      .hero-sub {
+        margin: 0 auto;
+      }
+
+      .quick-nav {
+        right: 10px;
+      }
+
+    }
+
+    @media (max-width: 700px) {
+      section {
+        min-height: auto;
+        padding: 0 50px;
+  }
+
+      .quick-nav {
+        display: none;
+      }
+}
+</style>
+</head>
+<body>
+  <div class="scroll-progress" aria-hidden="true"><span class="scroll-progress__bar" id="scrollProgressBar"></span></div>
+  <div class="veil" id="veil" aria-label="Открыть открытку">
+    <div>
+      <h1 class="veil__title">Для Сашули...</h1>
+      <p class="veil__hint">Нажми или прокрути, чтобы открыть</p>
+    </div>
+  </div>
+
+  <div class="petals" id="petalsLayer" aria-hidden="true"></div>
+  <nav class="quick-nav" id="quickNav" aria-label="Навигация по разделам">
+    <button class="quick-nav__dot is-active" type="button" data-target="hero" title="Титульный"></button>
+    <button class="quick-nav__dot" type="button" data-target="wordsSection" title="Слова"></button>
+    <button class="quick-nav__dot" type="button" data-target="facetsSection" title="Комплименты"></button>
+    <button class="quick-nav__dot" type="button" data-target="finalSection" title="Финал"></button>
+  </nav>
+  <div class="secret-banner" id="secretBanner">Режим нежности активирован ✨</div>
+
+  <main class="site" id="siteContent">
+    <section class="hero" id="hero">
+      <div class="photo-wrap" id="heroPhotoWrap">
+        <img src="photo_2026-03-03_21-24-51.jpg" alt="Сашуля">
+</div>
+
+      <div class="hero-copy">
+        <h2 class="hero-name">САШУЛЯ</h2>
+        <p class="hero-sub">8 марта — день, когда даже весна завидует твоей красоте.</p>
+  </div>
+</section>
+
+    <section class="typewriter-section" id="wordsSection">
+      <h3 class="section-title">Слова, которые хочется повторять</h3>
+      <div class="typewriter-box">
+        <p class="typewriter-line" id="typingLine"></p>
+        <div class="typing-history" id="typingHistory"></div>
+      </div>
+</section>
+
+    <section class="facets" id="facetsSection">
+      <h3 class="facets-title">Нажми, чтобы кое-что узнать о себе)</h3>
+
+      <button class="facets-orb" id="qualityBlock" type="button" aria-label="Сменить комплимент">
+        <span class="facets-main" id="qualityMain">Ты — самая светлая</span>
+        <span class="facets-sub" id="qualitySub">С тобой всегда спокойно и тепло, и рядом с тобой на душе становится очень уютно.</span>
+      </button>
+</section>
+
+    <section class="final" id="finalSection">
+      <h3 class="final-title">С 8 Марта, зайка моя ❤</h3>
+      <p class="final-sub">Ты делаешь этот мир красивее, теплее и честнее просто тем, что в нем есть.</p>
+      <button class="hug-btn" id="hugBtn" type="button">Обнять тебя</button>
+    </section>
+  </main>
+
+<script>
+    (function () {
+      var body = document.body;
+      var isMobile = window.matchMedia("(max-width: 820px)").matches;
+      if (isMobile) {
+        body.classList.add("is-mobile");
+      }
+
+      var veil = document.getElementById("veil");
+      var site = document.getElementById("siteContent");
+      var progressBar = document.getElementById("scrollProgressBar");
+      var secretBanner = document.getElementById("secretBanner");
+      var quickNav = document.getElementById("quickNav");
+      var opened = false;
+
+      function openVeil() {
+        if (opened) {
+          return;
+        }
+        opened = true;
+        veil.classList.add("is-open");
+        site.classList.add("is-ready");
+      }
+
+      veil.addEventListener("click", openVeil);
+      window.addEventListener("wheel", function () {
+        openVeil();
+      }, { passive: true, once: true });
+      window.addEventListener("touchmove", function () {
+        openVeil();
+      }, { passive: true, once: true });
+      window.addEventListener("keydown", function (event) {
+        if (event.key === "Enter" || event.key === " ") {
+          openVeil();
+        }
+      });
+
+      function updateScrollProgress() {
+        var scrollTop = window.scrollY || window.pageYOffset;
+        var height = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight) - window.innerHeight;
+        var percent = height > 0 ? (scrollTop / height) * 100 : 0;
+        progressBar.style.width = Math.min(100, Math.max(0, percent)) + "%";
+      }
+
+      updateScrollProgress();
+      window.addEventListener("scroll", updateScrollProgress, { passive: true });
+
+      var petalsLayer = document.getElementById("petalsLayer");
+      var petalsCount = isMobile ? 5 : 7;
+      for (var i = 0; i < petalsCount; i += 1) {
+        var petal = document.createElement("span");
+        petal.className = "petal";
+        petal.style.left = Math.random() * 100 + "vw";
+        petal.style.animationDuration = (isMobile ? 12 : 9) + Math.random() * 8 + "s";
+        petal.style.animationDelay = -Math.random() * 8 + "s";
+        petal.style.setProperty("--fall-x", (Math.random() * 90 - 45) + "px");
+        petalsLayer.appendChild(petal);
+      }
+
+      if (quickNav) {
+        quickNav.addEventListener("click", function (event) {
+          var btn = event.target.closest(".quick-nav__dot");
+          if (!btn) {
+            return;
+          }
+          var targetId = btn.getAttribute("data-target");
+          var target = document.getElementById(targetId);
+          if (target) {
+            target.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        });
+
+        var observedSections = ["hero", "wordsSection", "facetsSection", "finalSection"]
+          .map(function (id) { return document.getElementById(id); })
+          .filter(Boolean);
+
+        var observer = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting) {
+              return;
+            }
+            var id = entry.target.id;
+            var dots = quickNav.querySelectorAll(".quick-nav__dot");
+            dots.forEach(function (dot) {
+              dot.classList.toggle("is-active", dot.getAttribute("data-target") === id);
+            });
+          });
+        }, { threshold: 0.45 });
+
+        observedSections.forEach(function (section) {
+          observer.observe(section);
+        });
+      }
+
+      var typingLine = document.getElementById("typingLine");
+      var typingHistory = document.getElementById("typingHistory");
+      var typingPhrases = [
+        "Ты мое самое тихое и самое любимое счастье.",
+        "Рядом с тобой сердце всегда дома.",
+        "Твое тепло лечит даже в самые холодные дни.",
+        "Ты нежность, которую хочется беречь каждую секунду.",
+        "С тобой даже молчание звучит как любовь.",
+        "Спасибо тебе за свет, который ты даришь просто собой."
+      ];
+      var phraseIndex = 0;
+      var charIndex = 0;
+      var current = "";
+      var typingDelay = isMobile ? 46 : 34;
+      var pauseDelay = 880;
+
+      function printNextChar() {
+        if (phraseIndex >= typingPhrases.length) {
+          phraseIndex = 0;
+          typingHistory.innerHTML = "";
+        }
+
+        var phrase = typingPhrases[phraseIndex];
+        if (charIndex < phrase.length) {
+          current += phrase.charAt(charIndex);
+          charIndex += 1;
+          typingLine.innerHTML = current + '<span class="cursor">|</span>';
+          setTimeout(printNextChar, typingDelay);
+          return;
+        }
+
+        var historyLine = document.createElement("p");
+        historyLine.textContent = phrase;
+        typingHistory.prepend(historyLine);
+
+        current = "";
+        charIndex = 0;
+        phraseIndex += 1;
+        setTimeout(printNextChar, pauseDelay);
+      }
+
+      setTimeout(printNextChar, 900);
+
+      var qualityBlock = document.getElementById("qualityBlock");
+      var qualityMain = document.getElementById("qualityMain");
+      var qualitySub = document.getElementById("qualitySub");
+      var cardIndex = 0;
+
+      var facets = [
+        {
+          quality: "умная",
+          desc: "Твои мысли всегда такие точные и глубокие, что рядом с тобой хочется становиться лучше.",
+          glow: "rgba(98, 102, 255, 0.65)",
+          bg: "linear-gradient(130deg, rgba(94,114,255,0.24), rgba(250,250,255,0.32))"
+        },
+        {
+          quality: "красивая",
+          desc: "В тебе столько света и нежности, что на тебя хочется смотреть снова и снова.",
+          glow: "rgba(255, 120, 188, 0.63)",
+          bg: "linear-gradient(130deg, rgba(255,124,198,0.21), rgba(255,246,250,0.33))"
+        },
+        {
+          quality: "милая",
+          desc: "Твоя улыбка согревает лучше любых слов и делает каждый день мягче и светлее.",
+          glow: "rgba(247, 180, 217, 0.7)",
+          bg: "linear-gradient(130deg, rgba(250,191,224,0.22), rgba(253,247,255,0.35))"
+        },
+        {
+          quality: "интересная",
+          desc: "С тобой никогда не бывает скучно: каждый день рядом с тобой как новая красивая история.",
+          glow: "rgba(255, 169, 83, 0.63)",
+          bg: "linear-gradient(130deg, rgba(255,181,104,0.23), rgba(255,248,238,0.36))"
+        },
+        {
+          quality: "любимая",
+          desc: "О тебе я думаю первым делом утром и с теплом в сердце перед самым сном.",
+          glow: "rgba(192, 45, 79, 0.68)",
+          bg: "linear-gradient(130deg, rgba(175,21,74,0.23), rgba(255,236,241,0.33))"
+        },
+        {
+          quality: "лучшая",
+          desc: "С тобой я точно понимаю, каким бывает настоящее счастье: тихим, теплым и очень родным.",
+          glow: "rgba(226, 188, 99, 0.72)",
+          bg: "linear-gradient(130deg, rgba(230,190,90,0.24), rgba(255,249,226,0.35))"
+        },
+        {
+          quality: "неповторимая",
+          desc: "Ты одна такая: родная, тонкая и настоящая, и за это я бесконечно тебя ценю.",
+          glow: "rgba(206, 188, 255, 0.72)",
+          bg: "linear-gradient(130deg, rgba(195,173,255,0.24), rgba(255,255,255,0.4))"
+        }
+      ];
+
+      function renderFacet(index) {
+        var item = facets[index];
+        qualityMain.textContent = "Ты — самая " + item.quality;
+        qualitySub.textContent = item.desc;
+
+        qualityBlock.style.background = item.bg;
+        qualityBlock.style.boxShadow =
+          "inset 0 0 26px rgba(255, 255, 255, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.35), 0 14px 28px rgba(40, 23, 32, 0.2), 0 0 30px " + item.glow;
+
+      }
+
+      function showNextCard() {
+        cardIndex = (cardIndex + 1) % facets.length;
+        renderFacet(cardIndex);
+      }
+
+      renderFacet(cardIndex);
+
+      qualityBlock.addEventListener("click", showNextCard);
+      qualityBlock.addEventListener("keydown", function (event) {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          showNextCard();
+        }
+      });
+
+      qualityBlock.addEventListener("touchend", function () {
+        showNextCard();
+      }, { passive: true });
+
+      var hugBtn = document.getElementById("hugBtn");
+      var heroPhotoWrap = document.getElementById("heroPhotoWrap");
+      var heroImage = heroPhotoWrap ? heroPhotoWrap.querySelector("img") : null;
+
+      function syncPhotoAspectRatio() {
+        if (!heroPhotoWrap || !heroImage || !heroImage.naturalWidth || !heroImage.naturalHeight) {
+          return;
+        }
+        heroPhotoWrap.style.aspectRatio = heroImage.naturalWidth + " / " + heroImage.naturalHeight;
+      }
+
+      if (heroImage) {
+        if (heroImage.complete) {
+          syncPhotoAspectRatio();
+        } else {
+          heroImage.addEventListener("load", syncPhotoAspectRatio, { once: true });
+        }
+      }
+
+      if (!isMobile && heroPhotoWrap) {
+        heroPhotoWrap.addEventListener("mousemove", function (event) {
+          var rect = heroPhotoWrap.getBoundingClientRect();
+          var x = (event.clientX - rect.left) / rect.width - 0.5;
+          var y = (event.clientY - rect.top) / rect.height - 0.5;
+          heroPhotoWrap.classList.add("is-tilting");
+          heroPhotoWrap.style.transform = "perspective(900px) rotateX(" + (-y * 6) + "deg) rotateY(" + (x * 8) + "deg) scale(1.02)";
+        });
+
+        heroPhotoWrap.addEventListener("mouseleave", function () {
+          heroPhotoWrap.style.transform = "";
+          heroPhotoWrap.classList.remove("is-tilting");
+        });
+      }
+
+      function spawnClickHearts(x, y) {
+        for (var i = 0; i < 8; i += 1) {
+          var burst = document.createElement("span");
+          burst.className = "click-heart";
+          burst.textContent = Math.random() > 0.5 ? "❤" : "💖";
+          burst.style.left = (x + (Math.random() * 70 - 35)) + "px";
+          burst.style.top = (y + (Math.random() * 30 - 15)) + "px";
+          burst.style.animationDelay = (Math.random() * 0.1) + "s";
+          document.body.appendChild(burst);
+          (function (node) {
+            setTimeout(function () { node.remove(); }, 1200);
+          })(burst);
+        }
+      }
+
+      document.addEventListener("dblclick", function (event) {
+        spawnClickHearts(event.clientX, event.clientY);
+      });
+
+      if (!isMobile) {
+        var sparkleTick = false;
+        document.addEventListener("mousemove", function (event) {
+          if (sparkleTick) {
+            return;
+          }
+          sparkleTick = true;
+          window.requestAnimationFrame(function () {
+            sparkleTick = false;
+            var sparkle = document.createElement("span");
+            sparkle.className = "sparkle";
+            sparkle.style.left = event.clientX + "px";
+            sparkle.style.top = event.clientY + "px";
+            document.body.appendChild(sparkle);
+            setTimeout(function () { sparkle.remove(); }, 850);
+          });
+        }, { passive: true });
+      }
+
+      var easterCode = "sasha";
+      var typed = "";
+      window.addEventListener("keydown", function (event) {
+        if (!event.key || event.key.length !== 1) {
+          return;
+        }
+        typed = (typed + event.key.toLowerCase()).slice(-easterCode.length);
+        if (typed === easterCode) {
+          body.classList.toggle("party-mode");
+          secretBanner.classList.add("show");
+          setTimeout(function () {
+            secretBanner.classList.remove("show");
+          }, 1800);
+          dropHearts();
+        }
+      });
+
+      function dropHearts() {
+        var heartsCount = isMobile ? 16 : 26;
+        for (var i = 0; i < heartsCount; i += 1) {
+          var heart = document.createElement("span");
+          heart.className = "heart";
+          heart.textContent = Math.random() > 0.4 ? "❤" : "💖";
+          heart.style.left = Math.random() * 100 + "vw";
+          heart.style.fontSize = (12 + Math.random() * 14) + "px";
+          heart.style.opacity = String(0.7 + Math.random() * 0.3);
+          heart.style.animationDuration = (3.2 + Math.random() * 2.6) + "s";
+          heart.style.setProperty("--drift", (Math.random() * 120 - 60) + "px");
+    document.body.appendChild(heart);
+
+          (function (node) {
+            setTimeout(function () {
+              node.remove();
+            }, 6200);
+          })(heart);
+        }
+      }
+
+      hugBtn.addEventListener("click", function () {
+        heroPhotoWrap.style.transform = "scale(1.03)";
+        setTimeout(function () {
+          heroPhotoWrap.style.transform = "";
+        }, 520);
+        dropHearts();
+      });
+    })();
+</script>
+</body>
+</html>
